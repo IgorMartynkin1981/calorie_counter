@@ -11,6 +11,7 @@ public class calorie_counter {
             int command = scanner.nextInt(); // повторное считывание данных от пользователя
             if (command == 1) {
                 System.out.println("Command 1");
+                StepTracker.printMonth();
             } else if (command == 2) {
                 System.out.println("Command 2");
             } else if (command == 3) {
