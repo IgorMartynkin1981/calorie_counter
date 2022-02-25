@@ -15,7 +15,7 @@ public class calorie_counter {
                 System.out.println("");
                 int monthData;
                 int monthName;
-                while (true) {
+                while (true) { // делаем защиту от неверно введённых данных
                     System.out.print("Введите месяц: ");
                     int toMonthName = scanner.nextInt();
                     if ((toMonthName < 1) || (toMonthName > 12)) {
@@ -25,7 +25,7 @@ public class calorie_counter {
                         break;
                     }
                 }
-                while (true) {
+                while (true) { // делаем защиту от неверно введённых данных
                     System.out.print("Введите число месяца (от 1 до 30): ");
                     int toMonthData = scanner.nextInt();
                     if ((toMonthData < 1) || (toMonthData > 30)) {
@@ -42,7 +42,23 @@ public class calorie_counter {
 
             //Напечатать статистику за определённый месяц
             } else if (command == 2) {
-                System.out.println("Command 2");
+                int monthName = 0;
+                while (true) { // делаем защиту от неверно введённых данных
+                    StepTracker.printMonth();
+                    System.out.println(" ");
+                    System.out.print("За какой месяц хотите получить статистику (0 - выйти из меню): ");
+                    int toMonthName = scanner.nextInt();
+                    if (toMonthName == 0) break;
+                    if ((toMonthName < 1) || (toMonthName > 12)) {
+                        System.out.println("Число должно быть в диапозоне от 1 до 12");
+                    } else if (!StepTracker.monthToData.containsKey(toMonthName)) { // проверяем на заполненую информацию
+                        System.out.println("Информация за " + StepTracker.monthName[toMonthName-1] + " отсутствует");
+                    } else {
+                        StepTracker.allStepsToMounth(toMonthName);
+                        break;
+                    }
+
+                }
 
             //Изменить цель по количеству шагов в день
             } else if (command == 3) {
@@ -54,8 +70,9 @@ public class calorie_counter {
                         System.out.println("Значение должно быть больше 0");
                     }
             } else if (command == 0) {
-                System.out.println("Command 0");
                 break;
+            } else if (command == 5) { //секретная команда для автоматического заполнения таблицы, необходима для проверки
+                StepTracker.autoComplete();
             } else {
                 System.out.println("Извините, такой команды пока нет.");
             }

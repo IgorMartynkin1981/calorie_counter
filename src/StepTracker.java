@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.ArrayList;
+import java.util.Random;
+
 
 public class StepTracker {
     static HashMap<Integer, int[]> monthToData = new HashMap<>();
@@ -23,10 +24,59 @@ public class StepTracker {
         } else {                                    //if found value
             int[] monthData = monthToData.get(toMonthName);
             monthData[(toMonthData - 1)] = toSteps;
-            //monthToData.put(toMonthName, monthData);
-
         }
     }
+
+    //--------------------------------------------------------//
+    //Создадим вывод информации за месяц
+    public static void allStepsToMounth(int toMonthName) {
+        int[] monthData = monthToData.get(toMonthName);
+        int sumSteps = 0;
+        int maxSteps = 0;
+        double averageStep = 0;
+        int notZeroSteps = 0;
+        // создаём два значения для поиска лучшей серии
+        int bestSeriesOne = 0; // нужен для вычисления текущей серии
+        int bestSeriesTwo = 0; // нужен для сохранения максимальной серии
+        System.out.println("Количество пройденных шагов по дням:");
+        for (int i = 0; i < monthData.length; i++) {
+            System.out.print((i + 1) + " день: " + monthData[i] + ", ");
+            sumSteps += monthData[i];
+            if (monthData[i] > maxSteps) maxSteps = monthData[i];
+            if (monthData[i] > 0) notZeroSteps += 1;
+            if (notZeroSteps != 0) averageStep = (sumSteps / notZeroSteps);
+            /*
+            если кол-во шагов в день = или больше цели, то начинаем сумировать bestSeriesOne и
+            сравнивать его с bestSeriesTwo и если оно больше то bestSeriesTwo становиться = bestSeriesOne
+            так мы сохраняем серию. как только кол-во шагов в день < цели, то скидываем bestSeriesOne.
+            и так пока не пройдёт весь цикл.
+             */
+            if (monthData[i] >= targetSteps) {
+                bestSeriesOne += 1;
+                if (bestSeriesOne > bestSeriesTwo){
+                    bestSeriesTwo = bestSeriesOne;
+                }
+            } else if (monthData[i] < targetSteps){
+                bestSeriesOne = 0;
+            }
+        }
+        System.out.println(" ");
+        System.out.println("Общее количество шагов за месяц: " + sumSteps);
+        System.out.println("Максимальное пройденное количество шагов в месяце: " + maxSteps);
+        System.out.println("Среднее количество шагов в месяце: " + averageStep);
+        Converter(sumSteps);
+        System.out.println("Лучшая серия шагов в месяце: " + bestSeriesTwo);
+    }
+
+    //--------------------------------------------------------//
+    //Создадим Конвертер
+    public static void Converter(int step) {
+        double stepToKM = step * 0.00075; // преобразовываем шаги в км при условии, что 1 шаг = 75 см = 0,75 м = 0,00075 км
+        System.out.println("Пройденная дистанция (в км): " + stepToKM);
+        double stepToKilocalories = step * 0.05; // преобразовываем шаги в килокалории при условии, что 1 шаг = 50 калорий
+        System.out.println("Количество сожжённых килокалорий: " + stepToKilocalories);
+    }
+
 
     //--------------------------------------------------------//
     //Печать всей ХЭШ-таблицы. Для контроля при написании
@@ -50,13 +100,18 @@ public class StepTracker {
 
     //для отображения месяцев при запросе о вводе и выводе
     static void printMonth(){
-        /*
-        for (int i = 0; i < 12; i++) {
-            System.out.println((i+1) + "-" + monthName[i]);
-        }
-        */
-        for (int i = 0; i < 12; i++) {
-            System.out.print((i+1) + "-" + monthName[i] + ": ");
+        for (int i = 0; i < 12; i++) System.out.print((i + 1) + "-" + monthName[i] + ": ");
+    }
+
+    //Секретная функция для автоматического заполнения Хэш-таблицы, создана для тестов
+    public static void autoComplete(){
+        Random random = new Random();
+        for (int i = 1; i <13; i++ ){
+            int[] monthData = new int[30];
+            for (int x = 0; x < monthData.length; x++) {
+                monthData[x] = random.nextInt(20000);
+            }
+            monthToData.put(i, monthData);
         }
     }
 
